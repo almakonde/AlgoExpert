@@ -1,0 +1,51 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${/media/sapere-aude/D/CONTEST/sortedSquaredArray}/solutionThree",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${/media/sapere-aude/D/CONTEST/sortedSquaredArray}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ],
+      "preLaunchTask": "build my code",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "logging": {
+        "trace": false,
+        "traceResponse": false,
+        "engineLogging": false,
+        "programOutput": false
+      }
+    },
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "cppdbg",
+      "request": "launch",
+      "args": [],
+      "stopAtEntry": false,
+      "externalConsole": false,
+      "cwd": "/media/sapere-aude/D/CONTEST/BST",
+      "program": "/media/sapere-aude/D/CONTEST/BST/build/Debug/outDebug",
+      "MIMode": "gdb",
+      "miDebuggerPath": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    }
+  ]
+}
