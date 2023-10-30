@@ -35,8 +35,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/media/sapere-aude/D/CONTEST/BST",
-      "program": "/media/sapere-aude/D/CONTEST/BST/build/Debug/outDebug",
+      "cwd": "/media/sapere-aude/D/CONTEST/intervalMap.cpp",
+      "program": "/media/sapere-aude/D/CONTEST/intervalMap.cpp/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
