@@ -53,6 +53,11 @@ public:
 
         // Проверяем, есть ли совпадение с последующим интервалом
         bool overlapWithNext = (itEnd != m_map.end() && itEnd->second == val);
+
+        if(overlapWithCurrent) 
+        {
+            
+        }
 //
         if (itBegin != m_map.begin())
         {
