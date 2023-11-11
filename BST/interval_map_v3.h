@@ -1,6 +1,7 @@
 #include <map>
 #include <limits>
 #include <utility>  // for std::pair
+#include <iostream>
 
 template <typename K, typename V>
 class interval_map {
@@ -48,5 +49,12 @@ public:
         } else {
             return (--it)->second;
         }
+    }
+    void printMap() const {
+        for(const auto& pair : m_map) {
+            std::cout<< pair.first << "->" <<pair.second <<std::endl;
+        }
+        std::cout << "Default: " << m_valBegin << std::endl;
+
     }
 };
