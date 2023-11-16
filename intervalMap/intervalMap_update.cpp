@@ -30,105 +30,88 @@ public:
             return;
         }
 
-        auto itBegin = m_map.lower_bound(keyBegin);
-        auto itEnd = m_map.lower_bound(keyEnd);
+        typename std::map<K, V>::iterator itBegin = m_map.lower_bound(keyBegin);
+        typename std::map<K, V>::iterator itEnd = m_map.lower_bound(keyEnd);
 
-        auto previtBegin = (itBegin != m_map.begin()) ? std::prev(itBegin) : m_map.begin();
+        typename std::map<K, V>::iterator previtBegin = (itBegin != m_map.begin()) ? std::prev(itBegin) : m_map.begin();
+        typename std::map<K, V>::iterator previtEnd = (itEnd != m_map.begin()) ? std::prev(itEnd) : m_map.begin();
 
-        auto previtEnd = (itEnd != m_map.begin()) ? std::prev(itEnd) : m_map.begin();
+        // Handle cases where there is an overlap with the previous interval
+        handleOverlapWithPrev(previtEnd, val);
 
-        // Проверяем, есть ли совпадение с предыдущим интервалом
-        bool overlapWithPrev = (previtEnd != m_map.begin() && previtEnd->second == val);
+        // Handle cases where there is an overlap with the current interval
+        handleOverlapWithCurrent(itBegin, val, keyBegin);
 
-        // Проверяем, есть ли совпадение с текущим интервалом
-        bool overlapWithCurrent = (itBegin != m_map.end() && itBegin->second == val);
+        // Handle cases where the first key is greater than the iterator
+        handleFirstKeyGreaterThanIterator(itBegin, keyBegin, keyEnd, val);
 
-        // Проверяем, есть ли совпадение с последующим интервалом
-        bool overlapWithNext = (itEnd != m_map.end() && itEnd->second == val);
+        // Handle cases where there is an overlap with the next interval
+        handleOverlapWithNext(itEnd, val, keyEnd);
+    }
 
-        // если первый ключ и итератор равны
-        if (itBegin->first == keyBegin && itBegin != m_map.end())
+    void handleOverlapWithPrev(typename std::map<K, V>::iterator previtEnd, const V &val)
+    {
+        // Handle cases where there is an overlap with the previous interval
+        if (previtEnd != m_map.begin() && previtEnd->second == val)
         {
-            // значения равны
-            if (itBegin->second == val)
-            {
-                // return;
-            }
-            // значения не равны
-            if (itBegin->second != val)
-            {
-                m_map.insert(itBegin, {keyBegin, val});
-                //itBegin->second = val;
-            }
+            // Remove the overlap
+            m_map.erase(previtEnd);
         }
-        // первый ключ больше итератора
-        if (itBegin->first > keyBegin && itBegin != m_map.end())
+    }
+
+    void handleOverlapWithCurrent(typename std::map<K, V>::iterator itBegin, const V &val, const K &keyBegin)
+    {
+        // Handle cases where there is an overlap with the current interval
+        if (itBegin != m_map.end() && itBegin->first == keyBegin)
+        {
+            // Values are equal, do nothing
+            if (itBegin->second == val)
+            {
+                return;
+            }
+
+            // Values are not equal, insert a new interval
+            m_map.insert(itBegin, {keyBegin, val});
+        }
+    }
+
+    void handleFirstKeyGreaterThanIterator(
+        typename std::map<K, V>::iterator itBegin, const K &keyBegin, const K &keyEnd, const V &val)
+    {
+        // Handle cases where the first key is greater than the iterator
+        if (itBegin != m_map.end() && itBegin->first > keyBegin)
         {
             if (itBegin->second == val)
             {
+                // Values are equal, adjust the interval
                 if (itBegin->first < keyEnd)
                 {
                     m_map.insert(std::prev(itBegin), {keyBegin, val});
                     m_map.erase(itBegin);
                 }
-                else
-                {
-                    //...
-                }
-            }
-            else if (itBegin->second != val)
-            {
-
-                m_map.insert(std::prev(itBegin), {keyBegin, val});
-                m_map.erase(itBegin);
+                // Values are equal, but no adjustment is needed
             }
             else
             {
-                // return;
+                // Values are not equal, insert a new interval
+                m_map.insert(std::prev(itBegin), {keyBegin, val});
+                m_map.erase(itBegin);
             }
         }
-        // обработка предыдущих значений, нужна, если значения одни и те же
-        if (previtBegin->first < keyBegin && itBegin != m_map.end())
-        { // теоретически этого случая быть не должно
-            if (previtBegin->second == val)
-            {
-                if (itBegin->second == previtBegin->second)
-                {
-                    m_map.erase(itBegin);
-                }
+    }
 
-                // ничего не вставляется
-            }
-            if (previtBegin->second != val)
-            {
-                // вызываем случаи когда итератор и ключ равны или не равны
-            }
-        }
-        if (keyEnd == itEnd->first && itEnd != m_map.end())
+    void handleOverlapWithNext(typename std::map<K, V>::iterator itEnd, const V &val, const K &keyEnd)
+    {
+        // Handle cases where there is an overlap with the next interval
+        if (itEnd != m_map.end() && itEnd->first == keyEnd)
         {
             if (itEnd->second != val)
             {
-
-                //...ничего не делаем
+                //...do nothing
             }
             if (itEnd->second == val)
             {
-                // отрезок не включительно
-                //auto temp = --itEnd;
-                //--itEnd = {keyEnd, val};
-
-                //...
-            }
-        }
-        if (keyEnd < itEnd->first && itEnd != m_map.end())
-        {
-            //ключ последний и тот что больше или равен не равны значению
-            if (itEnd->second != val)
-            {
-                //m_map.insert(--keyEnd, {keyEnd, val});
-            }
-            if (itEnd->second == val)
-            {
+                // Remove the overlap and consecutive intervals with the same value
                 m_map.erase(itEnd);
                 auto nextIt = std::next(itEnd);
                 while (nextIt != m_map.end() && nextIt->second == val)
@@ -159,55 +142,7 @@ public:
 
 int main()
 {
-    std::map<int, char> m;
-    int start = 1;
-    int end = 100;
-
-    // Создаем вектор со значениями от start до end
-    std::vector<int> keys(end - start + 1);
-    std::iota(keys.begin(), keys.end(), start);
-
-    // Инициализируем генератор случайных чисел
-    std::random_device rd;
-    std::mt19937 g(rd());
-
-    // Перемешиваем значения в векторе
-    std::shuffle(keys.begin(), keys.end(), g);
-
-    // Добавляем значения в map
-    for (char value = 'A'; value <= 'Z'; value = value + 1)
-    {
-        if (!keys.empty())
-        {
-            m[keys.back()] = value;
-            keys.pop_back();
-        }
-        else
-        {
-            break;
-        }
-    }
-
-    for (const auto &n : m)
-    {
-        std::cout << n.first << " - > '" << n.second << "' " << std::endl;
-    }
-    auto it = m.lower_bound(25);
-    auto upperIt = m.upper_bound(0);
-    // auto previtBegin = std::prev(it);
-
-    if (it != m.end())
-    {
-        auto previtBegin = std::prev(it);
-        std::cout << "Key: " << it->first << ", Value: " << it->second << std::endl;
-        std::cout << "Previous Key: " << previtBegin->first << ", Value: " << previtBegin->second << std::endl;
-        std::cout << "Upper bound key: " << upperIt->first << ", Value" << upperIt->second << std::endl;
-    }
-    else
-    {
-        std::cout << "No lower bound found." << std::endl;
-    }
-
+   
     interval_map<int, char> M('A');
     M.assign(1, 4, 'B');
     M.assign(3, 5, 'C');

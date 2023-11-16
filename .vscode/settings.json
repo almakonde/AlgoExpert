@@ -108,6 +108,12 @@
     "ranges": "cpp",
     "streambuf": "cpp",
     "typeinfo": "cpp",
-    "numeric": "cpp"
+    "numeric": "cpp",
+    "forward_list": "cpp",
+    "list": "cpp",
+    "unordered_set": "cpp",
+    "span": "cpp",
+    "regex": "cpp",
+    "valarray": "cpp"
   }
 }
