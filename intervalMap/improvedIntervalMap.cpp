@@ -74,12 +74,10 @@ public:
                 return;
             auto hint = m_map.end();
             auto result1 = m_map.emplace_hint(hint, keyBegin, val);
-            // m_map.insert({keyBegin, val});//O(logn)
 
             hint = m_map.end();
             auto result2 = m_map.emplace_hint(hint, keyEnd, m_valBegin);
 
-            // m_map.insert({keyEnd, m_valBegin});//O(logn)
             return;
         }
 
@@ -103,31 +101,20 @@ public:
 
         if (doErase)
         {
-            // m_map.erase(startIt, endIt); // O(klogn)
+
             for (auto it = keyBegin; it != keyEnd; ++it)
             {
                 m_map.erase(it);
             }
         }
-        // m_map.erase(startIt, endIt); // O(logn)
-        /*
-        {
-            for (auto it = keyBegin; it != keyEnd; ++it)
-            {
-                m_map.erase(it);
-            }
-        }
-        */
-        auto hint = m_map.end(); // Default hint is end
+
+        auto hint = m_map.end();
 
         m_map.emplace_hint(hint, keyBegin, val); // O(logn)
 
         // Reset hint
         hint = m_map.end();
         m_map.emplace_hint(hint, keyEnd, upperVal); // O(logn)
-
-        // m_map.insert({keyBegin, val});//O(logn)
-        // m_map.insert({keyEnd, upperVal});//O(logn)
 
         // ensure canonical - further down
 
@@ -151,12 +138,6 @@ public:
 
         auto endIter = startIt;
 
-        /*while (endIter != m_map.end() && endIter->second == val)
-        {
-            ++endIter;
-        }
-
-        m_map.erase(startIt, endIter); // O(k * log n)*/
         while (startIt != m_map.end())
         {
             auto tmpKey = startIt->first;
@@ -164,13 +145,18 @@ public:
             if ((startIt++)->second == val)
             {
                 // Store the iterator for the next iteration before erasing the element
-                auto nextIt = startIt;
-                ++nextIt;
+                // auto nextIt = startIt;
+                auto eraseIt = m_map.find(tmpKey);
+                //++nextIt;
+                if (eraseIt != m_map.end())
+                {
+                    m_map.erase(eraseIt); // O(log n)
+                }
 
-                m_map.erase(tmpKey); // O(log n)
+                // m_map.erase(tmpKey); // O(log n)
 
                 // Move the iterator to the next position
-                startIt = nextIt;
+                //startIt = nextIt;
             }
             else
             {
