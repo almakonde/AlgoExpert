@@ -101,11 +101,7 @@ public:
 
         if (doErase)
         {
-
-            for (auto it = keyBegin; it != keyEnd; ++it)
-            {
-                m_map.erase(it);
-            }
+            m_map.erase(startIt, endIt);
         }
 
         auto hint = m_map.end();
@@ -144,19 +140,12 @@ public:
 
             if ((startIt++)->second == val)
             {
-                // Store the iterator for the next iteration before erasing the element
-                // auto nextIt = startIt;
                 auto eraseIt = m_map.find(tmpKey);
-                //++nextIt;
+
                 if (eraseIt != m_map.end())
                 {
                     m_map.erase(eraseIt); // O(log n)
                 }
-
-                // m_map.erase(tmpKey); // O(log n)
-
-                // Move the iterator to the next position
-                //startIt = nextIt;
             }
             else
             {
@@ -166,67 +155,8 @@ public:
     }
 };
 
-template <typename T>
-T generateRandomNumber(T min, T max)
-{
-    static random_device rd;
-    static mt19937 gen(rd());
-
-    if constexpr (is_floating_point<T>::value)
-    {
-        // Use uniform_real_distribution for floating-point types
-        uniform_real_distribution<T> distribution(min, max);
-        return distribution(gen);
-    }
-    else
-    {
-        // Use uniform_int_distribution for integer types
-        uniform_int_distribution<T> distribution(min, max);
-        return distribution(gen);
-    }
-}
-#include <iostream> // Add this include for cout and endl
-#include <cstdlib>  // Include necessary headers for your random number generation
-
-void IntervalMapTest()
-{
-    using namespace std; // Add this for cout and endl
-
-    // Initialize the interval_map with a default value (e.g., 'A')
-    interval_map<char, char> intervalMap('A');
-
-    // Perform a series of random operations
-    for (int i = 0; i < 1000; ++i)
-    {
-        char val = generateRandomNumber('A', 'Z');            // Random value
-        int keyBegin = generateRandomNumber(0, 99);           // Random keyBegin
-        int keyEnd = generateRandomNumber(keyBegin + 1, 100); // Random keyEnd
-
-        // Randomly decide whether to assign or lookup
-        bool assignOperation = generateRandomNumber(0, 1);
-
-        if (assignOperation)
-        {
-            // Assign the value to the interval [keyBegin, keyEnd)
-            intervalMap.assign(keyBegin, keyEnd, val);
-        }
-        else
-        {
-            // Look up the value for a random key within the interval_map
-            int key = generateRandomNumber(0, 100);
-            char result = intervalMap[key];
-            // Verify that the result matches the expected value
-            if (result != val)
-            {
-                cout << "Test failed: intervalMap[" << key << "] returned " << result
-                     << ", but expected " << val << endl;
-            }
-        }
-    }
-}
-
 // Output the interval_map contents (for debugging)
-void intervalMapTest0()
+void intervalMapTest()
 {
 
     interval_map<int, char> map('Z'); // Создаем интервальную карту
@@ -289,10 +219,25 @@ void intervalMapTest0()
     map.print();
 }
 
+void typeTest()
+{
+    using K = int;  // Replace with your actual key type
+    using V = char; // Replace with your actual value type
+
+    // Create an instance of your interval_map
+    interval_map<K, V> myIntervalMap('A'); // Use the appropriate constructor
+
+    // Add type-specific tests here to ensure correct behavior
+    // For example, check that certain operations compile and behave as expected
+
+    // Test assignment with valid types
+    myIntervalMap.assign(1, 5, 'B');
+    assert(myIntervalMap[3] == 'B');
+}
 int main()
 {
 
-    intervalMapTest0();
+    intervalMapTest();
 
     return 0;
 }
