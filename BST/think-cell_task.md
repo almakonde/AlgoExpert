@@ -86,4 +86,8 @@ Your task is to implement the function assign. Your implementation is graded by 
         Do not make big-O more operations on K and V than necessary because you do not know how fast operations on K/V are; remember that constructions, destructions and assignments are operations as well.
         Do not make more than one operation of amortized O(log N), in contrast to O(1), running time, where N is the number of elements in m_map.
         Otherwise favor simplicity over minor speed improvements.
-        
+Imagine your implementation is part of a library, so it should be big-O optimal. In addition:
+
+    Do not make big-O more operations on K and V than necessary because you do not know how fast operations on K/V are; remember that constructions, destructions and assignments are operations as well.
+    Do not make more than one operation of amortized O(log N), in contrast to O(1), running time, where N is the number of elements in m_map. Overloads of std::map::insert/emplace/delete that need to find an element position for a given key, have a running time of amortized O(log N). Overloads of std::map::insert/emplace/delete that take an iterator to the position of the inserted/deleted element,have a running time of amortized O(1), if the iterator points to the correct position.
+    Otherwise favor simplicity over minor speed improvements.

@@ -72,8 +72,9 @@ public:
             if (m_valBegin == val)
                 return;
 
-            m_map.insert({keyBegin, val});
-            m_map.insert({keyEnd, m_valBegin});
+            m_map.insert({keyBegin, val});//O(logn)
+
+            m_map.insert({keyEnd, m_valBegin});//O(logn)
             return;
         }
 
@@ -96,10 +97,10 @@ public:
             endIt++;
 
         if (doErase)
-            m_map.erase(startIt, endIt);
+            m_map.erase(startIt, endIt);//O(logn)
 
-        m_map.insert({keyBegin, val});
-        m_map.insert({keyEnd, upperVal});
+        m_map.insert({keyBegin, val});//O(logn)
+        m_map.insert({keyEnd, upperVal});//O(logn)
 
         // ensure canonical - further down
 
@@ -126,7 +127,7 @@ public:
             auto tmpKey = startIt->first;
 
             if ((startIt++)->second == val)
-                m_map.erase(tmpKey);
+                m_map.erase(tmpKey);//O(logn)
             else
                 break;
         }
