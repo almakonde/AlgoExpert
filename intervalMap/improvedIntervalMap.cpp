@@ -154,8 +154,70 @@ public:
         }
     }
 };
+void test() {
+     // instance of interval_map class
+    interval_map<int, char> m('A');
+    // calling of assign() function
+    m.assign(1, 3, 'B');
+    // loop for maping key and its corresponding value
+    for (int i = -2; i <= 5; ++i)
+        std::cout << std::setw(2) << i << ' ' << m[i] << '\n';
+    interval_map<int, char> map('Z'); // Создаем интервальную карту
 
+    // Тест 1: Пустой интервал
+    map.assign(5, 3, 'A'); // Ничего не должно измениться
+    // Проверяем, что значение по ключу 4 не изменилось
+    assert(map[4] == 'Z');
+
+    // Тест 2: Нормальное присвоение
+    map.assign(3, 8, 'B');
+    // Проверяем, что значения в интервале [3, 8) равны 'B'
+    for (int i = 3; i < 8; ++i)
+    {
+        assert(map[i] == 'B');
+    }
+
+    // Тест 3: Перекрытие существующих значений
+    map.assign(5, 7, 'C');
+    // Проверяем, что значения в интервале [5, 7) равны 'C', а остальные остались 'B'
+    for (int i = 3; i < 5; ++i)
+    {
+        assert(map[i] == 'B');
+    }
+    for (int i = 5; i < 7; ++i)
+    {
+        assert(map[i] == 'C');
+    }
+    for (int i = 7; i < 8; ++i)
+    {
+        assert(map[i] == 'B');
+    }
+
+    // Тест 4: Добавление новых интервалов
+    map.assign(10, 15, 'D');
+    // Проверяем, что значения в интервале [10, 15) равны 'D', а остальные остались 'B'
+    for (int i = 8; i < 10; ++i)
+    {
+        assert(map[i] == 'B');
+    }
+    for (int i = 10; i < 15; ++i)
+    {
+        assert(map[i] == 'D');
+    }
+    for (int i = 15; i < 20; ++i)
+    {
+        assert(map[i] == 'B');
+    }
+
+    // Тест 5: Доступ к значениям по ключу
+    assert(map[3] == 'B');
+    assert(map[5] == 'C');
+    assert(map[10] == 'D');
+
+    std::cout << "Все тесты пройдены успешно!" << std::endl;
+}
 int main()
 {
+    test();
     return 0;
 }
